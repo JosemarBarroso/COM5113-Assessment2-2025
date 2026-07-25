@@ -132,8 +132,8 @@ namespace COM5113_Assessment2_2025
                 }
                 if (_state[index] == SlotState.Occupied && _keys[index] == key)
                 {
-                    value = _values[index];
                     return true;
+                    value = _values[index];
                 }
                 // _state[index] == SlotState.Deleted: continue probing
             }
