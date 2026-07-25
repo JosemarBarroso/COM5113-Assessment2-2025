@@ -21,6 +21,7 @@
 
             TestScenario1();
             TestScenario2();
+            TestScenario3();
 
             Console.WriteLine("\nDone.");
         }
@@ -72,6 +73,42 @@
                 "Load factor is 0.125 after one insertion",
                 0.125,
                 t.LoadFactor
+            );
+        }
+
+        static void TestScenario3()
+        {
+            Console.WriteLine("\n-- Test Scenario 3: Count After Updating Existing Key --");
+
+            var t = new HashTable(8, HashFunction.Djb2, Probing.Linear);
+
+            t.Put("Nick", 42);
+
+            Validate.Equal(
+                "Count is 1 after first insertion",
+                1,
+                t.Count
+            );
+
+            t.Put("Nick", 99);
+
+            Validate.Equal(
+                "Count remains 1 after updating existing key",
+                1,
+                t.Count
+            );
+
+            bool found = t.TryGet("Nick", out int value);
+
+            Validate.Check(
+                "Updated key remains searchable",
+                found
+            );
+
+            Validate.Equal(
+                "Updated key stores the new value",
+                99,
+                value
             );
         }
 

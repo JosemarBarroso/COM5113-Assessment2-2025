@@ -103,7 +103,6 @@ namespace COM5113_Assessment2_2025
                 if (_state[index] == SlotState.Occupied && _keys[index] == key)
                 {
                     // update value for existing key
-                    Count++;
                     _values[index] = value;
                     return true;
                 }
