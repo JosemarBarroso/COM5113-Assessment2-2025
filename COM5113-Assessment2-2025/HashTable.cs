@@ -44,8 +44,8 @@ namespace COM5113_Assessment2_2025
         public int Capacity => _keys.Length;
 
         // LoadFactor - the load factor of the table
-        public double LoadFactor => (double)Capacity / Math.Max(1, Count);
-       
+        public double LoadFactor => (double)Count / Capacity;
+
         // Public Methods
         // --------------
 
@@ -132,8 +132,8 @@ namespace COM5113_Assessment2_2025
                 }
                 if (_state[index] == SlotState.Occupied && _keys[index] == key)
                 {
-                    return true;
                     value = _values[index];
+                    return true;
                 }
                 // _state[index] == SlotState.Deleted: continue probing
             }

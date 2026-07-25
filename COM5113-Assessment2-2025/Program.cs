@@ -19,8 +19,8 @@
         {
             Console.WriteLine("== Test Harness for HashTable ==");
 
-            // Call test scenario methods here:
             TestScenario1();
+            TestScenario2();
 
             Console.WriteLine("\nDone.");
         }
@@ -48,6 +48,31 @@
             // 3) TryGet value for missing key
             bool ok4 = t.TryGet("missing", out var v3);
             Validate.Check("TryGet returns false for missing key", !ok4);
+        }
+
+        static void TestScenario2()
+        {
+            Console.WriteLine("\n-- Test Scenario 2: Load Factor and Capacity --");
+
+            var t = new HashTable(8, HashFunction.Djb2, Probing.Linear);
+
+            Validate.Equal("Initial count is zero", 0, t.Count);
+            Validate.Equal("Initial capacity is 8", 8, t.Capacity);
+            Validate.Equal("Initial load factor is 0", 0.0, t.LoadFactor);
+
+            t.Put("A", 1);
+
+            Validate.Equal("Count is 1 after insertion", 1, t.Count);
+            Validate.Equal(
+                "Capacity remains 8 after one insertion",
+                8,
+                t.Capacity
+            );
+            Validate.Equal(
+                "Load factor is 0.125 after one insertion",
+                0.125,
+                t.LoadFactor
+            );
         }
 
     }
