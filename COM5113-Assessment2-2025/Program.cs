@@ -25,6 +25,8 @@
             TestScenario4();
             TestScenario5();
             TestScenario6();
+            TestScenario7();
+            TestScenario8();
 
             Console.WriteLine("\nDone.");
         }
@@ -248,6 +250,102 @@
             Validate.Equal(
                 "Count remains five after resize",
                 5,
+                t.Count
+            );
+        }
+
+        static void TestScenario7()
+        {
+            Console.WriteLine(
+                "\n-- Test Scenario 7: Quadratic Probing --"
+            );
+
+            var t = new HashTable(
+                8,
+                HashFunction.SimpleSum,
+                Probing.Quadratic
+            );
+
+            Validate.Check("Insert A", t.Put("A", 1));
+            Validate.Check("Insert I", t.Put("I", 2));
+            Validate.Check("Insert Q", t.Put("Q", 3));
+            Validate.Check("Insert Y", t.Put("Y", 4));
+
+            bool foundA = t.TryGet("A", out int valueA);
+            bool foundI = t.TryGet("I", out int valueI);
+            bool foundQ = t.TryGet("Q", out int valueQ);
+            bool foundY = t.TryGet("Y", out int valueY);
+
+            Validate.Check("Find A", foundA);
+            Validate.Equal("Value A", 1, valueA);
+
+            Validate.Check("Find I", foundI);
+            Validate.Equal("Value I", 2, valueI);
+
+            Validate.Check("Find Q", foundQ);
+            Validate.Equal("Value Q", 3, valueQ);
+
+            Validate.Check("Find Y", foundY);
+            Validate.Equal("Value Y", 4, valueY);
+        }
+
+        static void TestScenario8()
+        {
+            Console.WriteLine(
+                "\n-- Test Scenario 8: Double Hash Collision Handling --"
+            );
+
+            var t = new HashTable(
+                8,
+                HashFunction.SimpleSum,
+                Probing.DoubleHash
+            );
+
+            // Empty string produces secondary hash 0.
+            bool firstInserted = t.Put("", 10);
+
+            // This key has the same primary hash index as the empty string
+            // with SimpleSum and capacity 8.
+            bool secondInserted = t.Put("H", 20);
+
+            Validate.Check(
+                "First double-hash key is inserted",
+                firstInserted
+            );
+
+            Validate.Check(
+                "Second colliding key is inserted",
+                secondInserted
+            );
+
+            bool foundFirst = t.TryGet("", out int firstValue);
+            bool foundSecond = t.TryGet("H", out int secondValue);
+
+            Validate.Check(
+                "First key remains searchable",
+                foundFirst
+            );
+
+            Validate.Equal(
+                "First key retains its value",
+                10,
+                firstValue
+            );
+
+            Validate.Check(
+                "Second colliding key is searchable",
+                foundSecond
+            );
+
+            Validate.Equal(
+                "Second colliding key retains its value",
+                20,
+                secondValue
+            );
+
+            Validate.Equal(
+                "Count is 2 after two distinct insertions",
+                2,
                 t.Count
             );
         }

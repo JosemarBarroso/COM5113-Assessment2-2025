@@ -216,10 +216,11 @@ namespace COM5113_Assessment2_2025
             unchecked
             {
                 int h = 0;
+
                 for (int i = 0; i < key.Length; i++)
                     h = (h * 31) + key[i];
 
-                return Math.Abs(h) % Capacity;
+                return (Math.Abs(h) % (Capacity / 2)) * 2 + 1;
             }
         }
 
@@ -260,5 +261,7 @@ namespace COM5113_Assessment2_2025
                 }
             }
         }
+
+
     }
 }
