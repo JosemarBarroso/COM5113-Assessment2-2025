@@ -27,6 +27,7 @@
             TestScenario6();
             TestScenario7();
             TestScenario8();
+            TestScenario9();
 
             Console.WriteLine("\nDone.");
         }
@@ -346,6 +347,48 @@
             Validate.Equal(
                 "Count is 2 after two distinct insertions",
                 2,
+                t.Count
+            );
+        }
+
+        static void TestScenario9()
+        {
+            Console.WriteLine("\n-- Test Scenario 9: Reinsert After Delete --");
+
+            var t = new HashTable(8, HashFunction.SimpleSum, Probing.Linear);
+
+            t.Put("A", 10);
+            t.Remove("A");
+
+            Validate.Equal(
+                "Count is 0 after removal",
+                0,
+                t.Count
+            );
+
+            bool inserted = t.Put("A", 99);
+
+            Validate.Check(
+                "Key can be reinserted after deletion",
+                inserted
+            );
+
+            bool found = t.TryGet("A", out int value);
+
+            Validate.Check(
+                "Reinserted key is searchable",
+                found
+            );
+
+            Validate.Equal(
+                "Reinserted key stores new value",
+                99,
+                value
+            );
+
+            Validate.Equal(
+                "Count is 1 after reinsertion",
+                1,
                 t.Count
             );
         }
