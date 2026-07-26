@@ -241,23 +241,24 @@ namespace COM5113_Assessment2_2025
 
         private void Resize(int newCapacity)
         {
-            // Double the capacity (not necessarily prime)
-            var oldKeys  = _keys;
-            var oldVals  = _values;
-            var oldState = _state;
+            var oldKeys = _keys;
+            var oldValues = _values;
+            var oldStates = _state;
 
-            _keys   = new string?[newCapacity];
+            _keys = new string?[newCapacity];
             _values = new int[newCapacity];
-            _state  = new SlotState[newCapacity];
+            _state = new SlotState[newCapacity];
 
-            // Copy across existing arrays (preserve positions)
+            Count = 0;
+
             for (int i = 0; i < oldKeys.Length; i++)
             {
-                _keys[i]   = oldKeys[i];
-                _values[i] = oldVals[i];
-                _state[i]  = oldState[i];
+                if (oldStates[i] == SlotState.Occupied &&
+                    oldKeys[i] != null)
+                {
+                    Put(oldKeys[i]!, oldValues[i]);
+                }
             }
-            // Count is unchanged
         }
     }
 }

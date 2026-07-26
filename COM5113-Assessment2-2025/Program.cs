@@ -24,6 +24,7 @@
             TestScenario3();
             TestScenario4();
             TestScenario5();
+            TestScenario6();
 
             Console.WriteLine("\nDone.");
         }
@@ -188,6 +189,65 @@
             Validate.Equal(
                 "Count is 1 after removing one of two keys",
                 1,
+                t.Count
+            );
+        }
+
+        static void TestScenario6()
+        {
+            Console.WriteLine(
+                "\n-- Test Scenario 6: Resize and Rehash --"
+            );
+
+            var t = new HashTable(
+                4,
+                HashFunction.SimpleSum,
+                Probing.Linear
+            );
+
+            t.Put("A", 1);
+            t.Put("B", 2);
+            t.Put("C", 3);
+            t.Put("D", 4);
+
+            // The fifth insertion triggers resizing from 4 to 8.
+            bool insertedE = t.Put("E", 5);
+
+            Validate.Check(
+                "Fifth key is inserted successfully",
+                insertedE
+            );
+
+            Validate.Equal(
+                "Capacity increases from 4 to 8",
+                8,
+                t.Capacity
+            );
+
+            bool foundA = t.TryGet("A", out int valueA);
+            bool foundB = t.TryGet("B", out int valueB);
+            bool foundC = t.TryGet("C", out int valueC);
+            bool foundD = t.TryGet("D", out int valueD);
+            bool foundE = t.TryGet("E", out int valueE);
+
+            Validate.Check("Key A remains searchable after resize", foundA);
+            Validate.Equal("Key A retains value", 1, valueA);
+
+            Validate.Check("Key B remains searchable after resize", foundB);
+            Validate.Equal("Key B retains value", 2, valueB);
+
+            Validate.Check("Key C remains searchable after resize", foundC); 
+            Validate.Equal("Key C retains value", 3, valueC);
+
+            Validate.Check("Key D remains searchable after resize", foundD);
+            Validate.Equal("Key D retains value", 4, valueD);
+
+            Validate.Check("Key E is searchable after resize", foundE);
+            Validate.Equal("Key E retains value", 5, valueE);
+
+            Validate.Equal(
+                "Count remains five after resize",
+                5,
                 t.Count
             );
         }
