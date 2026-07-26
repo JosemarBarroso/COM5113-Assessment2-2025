@@ -22,6 +22,7 @@
             TestScenario1();
             TestScenario2();
             TestScenario3();
+            TestScenario4();
 
             Console.WriteLine("\nDone.");
         }
@@ -108,6 +109,42 @@
             Validate.Equal(
                 "Updated key stores the new value",
                 99,
+                value
+            );
+        }
+
+        static void TestScenario4()
+        {
+            Console.WriteLine("\n-- Test Scenario 4: Remove Missing Colliding Key --");
+
+            var t = new HashTable(8, HashFunction.SimpleSum, Probing.Linear);
+
+            t.Put("A", 10);
+
+            // "I" hashes to the same initial slot as "A" but was never inserted.
+            bool removed = t.Remove("I");
+
+            Validate.Check(
+                "Remove returns false for missing collided key",
+                !removed
+            );
+
+            Validate.Equal(
+                "Count remains 1 after failed removal",
+                1,
+                t.Count
+            );
+
+            bool found = t.TryGet("A", out int value);
+
+            Validate.Check(
+                "Existing key remains searchable",
+                found
+            );
+
+            Validate.Equal(
+                "Existing value remains unchanged",
+                10,
                 value
             );
         }

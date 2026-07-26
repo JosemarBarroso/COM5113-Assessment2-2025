@@ -157,11 +157,12 @@ namespace COM5113_Assessment2_2025
 
                 if (_state[index] == SlotState.Occupied && _keys[index] == key)
                 {
-                    _state[index] = SlotState.Empty; // mark removed
+                    _state[index] = SlotState.Deleted;
                     _keys[index] = null;
+                    _values[index] = default;
+                    Count--;
+                    return true;
                 }
-                Count--;
-                return true;
             }
             return false;
         }
