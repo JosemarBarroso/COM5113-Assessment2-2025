@@ -23,6 +23,7 @@
             TestScenario2();
             TestScenario3();
             TestScenario4();
+            TestScenario5();
 
             Console.WriteLine("\nDone.");
         }
@@ -146,6 +147,48 @@
                 "Existing value remains unchanged",
                 10,
                 value
+            );
+        }
+
+        static void TestScenario5()
+        {
+            Console.WriteLine(
+                "\n-- Test Scenario 5: Remove One Key From Collision Chain --"
+            );
+
+            var t = new HashTable(
+                8,
+                HashFunction.SimpleSum,
+                Probing.Linear
+            );
+
+            // Both keys hash to index 1.
+            t.Put("A", 10);
+            t.Put("I", 20);
+
+            bool removed = t.Remove("A");
+            bool foundI = t.TryGet("I", out int valueI);
+
+            Validate.Check(
+                "Remove returns true for existing collided key",
+                removed
+            );
+
+            Validate.Check(
+                "Second collided key remains searchable",
+                foundI
+            );
+
+            Validate.Equal(
+                "Second collided key retains its value",
+                20,
+                valueI
+            );
+
+            Validate.Equal(
+                "Count is 1 after removing one of two keys",
+                1,
+                t.Count
             );
         }
 
