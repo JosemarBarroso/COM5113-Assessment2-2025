@@ -28,6 +28,7 @@
             TestScenario7();
             TestScenario8();
             TestScenario9();
+            TestScenario10();
 
             Console.WriteLine("\nDone.");
         }
@@ -390,6 +391,93 @@
                 "Count is 1 after reinsertion",
                 1,
                 t.Count
+            );
+        }
+
+        static void TestScenario10()
+        {
+            Console.WriteLine(
+                "\n-- Test Scenario 10: Constructor and Null-Key Handling --"
+            );
+
+            // Capacity below 4 should be raised to 4.
+            var minimumTable = new HashTable(
+                1,
+                HashFunction.SimpleSum,
+                Probing.Linear
+            );
+
+            Validate.Equal(
+                "Capacity below 4 is increased to 4",
+                4,
+                minimumTable.Capacity
+            );
+
+            // Capacity should be rounded up to the next power of two.
+            var roundedTable = new HashTable(
+                10,
+                HashFunction.Djb2,
+                Probing.DoubleHash
+            );
+
+            Validate.Equal(
+                "Capacity 10 is rounded up to 16",
+                16,
+                roundedTable.Capacity
+            );
+
+            Validate.Equal(
+                "Selected hash function is retained",
+                HashFunction.Djb2,
+                roundedTable.HashChoice
+            );
+
+            Validate.Equal(
+                "Selected probing method is retained",
+                Probing.DoubleHash,
+                roundedTable.ProbingChoice
+            );
+
+            bool tryGetNull = roundedTable.TryGet(null!, out int nullValue);
+
+            Validate.Check(
+                "TryGet returns false for a null key",
+                !tryGetNull
+            );
+
+            Validate.Equal(
+                "TryGet null output remains default",
+                0,
+                nullValue
+            );
+
+            bool removeNull = roundedTable.Remove(null!);
+
+            Validate.Check(
+                "Remove returns false for a null key",
+                !removeNull
+            );
+
+            bool putThrewException = false;
+
+            try
+            {
+                roundedTable.Put(null!, 10);
+            }
+            catch (ArgumentNullException)
+            {
+                putThrewException = true;
+            }
+
+            Validate.Check(
+                "Put throws ArgumentNullException for null key",
+                putThrewException
+            );
+
+            Validate.Equal(
+                "Count remains zero after rejected null operations",
+                0,
+                roundedTable.Count
             );
         }
 
