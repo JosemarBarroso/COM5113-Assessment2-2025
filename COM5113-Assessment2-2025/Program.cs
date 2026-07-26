@@ -29,6 +29,7 @@
             TestScenario8();
             TestScenario9();
             TestScenario10();
+            TestScenario11();
 
             Console.WriteLine("\nDone.");
         }
@@ -478,6 +479,79 @@
                 "Count remains zero after rejected null operations",
                 0,
                 roundedTable.Count
+            );
+        }
+
+        static void TestScenario11()
+        {
+            Console.WriteLine(
+                "\n-- Test Scenario 11: Reuse Deleted Slot in Collision Chain --"
+            );
+
+            var t = new HashTable(
+                8,
+                HashFunction.SimpleSum,
+                Probing.Linear
+            );
+
+            // These keys collide using the SimpleSum hash.
+            t.Put("A", 10);
+            t.Put("I", 20);
+
+            // Remove the first key.
+            bool removed = t.Remove("A");
+
+            Validate.Check(
+                "Remove first colliding key",
+                removed
+            );
+
+            Validate.Equal(
+                "Count is 1 after removal",
+                1,
+                t.Count
+            );
+
+            // Insert another colliding key.
+            bool inserted = t.Put("Q", 30);
+
+            Validate.Check(
+                "New colliding key inserts successfully",
+                inserted
+            );
+
+            // Original remaining key should still exist.
+            bool foundI = t.TryGet("I", out int valueI);
+
+            Validate.Check(
+                "Original colliding key remains searchable",
+                foundI
+            );
+
+            Validate.Equal(
+                "Original colliding key keeps its value",
+                20,
+                valueI
+            );
+
+            // Newly inserted key should also exist.
+            bool foundQ = t.TryGet("Q", out int valueQ);
+
+            Validate.Check(
+                "New key is searchable",
+                foundQ
+            );
+
+            Validate.Equal(
+                "New key stores correct value",
+                30,
+                valueQ
+            );
+
+            Validate.Equal(
+                "Count returns to 2 after reinsertion",
+                2,
+                t.Count
             );
         }
 
